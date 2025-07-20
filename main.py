@@ -41,11 +41,17 @@ async def handle_approval(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
+    # Створюємо додаток із JobQueue
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
+    # Активуємо JobQueue явно
+    app.job_queue = app.job_queue  # Це ініціалізує JobQueue, якщо він ще не створений
+
+    # Додаємо обробники команд і колбеків
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_approval))
 
+    # Запускаємо задачу один раз через 5 секунд
     app.job_queue.run_once(send_news_for_approval, 5)
 
     app.run_polling()
