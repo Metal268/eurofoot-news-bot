@@ -41,15 +41,23 @@ async def handle_approval(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("❌ Відхилено.")
 
 def main():
-    # Створюємо додаток з правильним налаштуванням JobQueue
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    # Створюємо додаток і явно включаємо JobQueue
+    app = (ApplicationBuilder()
+           .token(BOT_TOKEN)
+           .concurrent_updates(True)
+           .build())
     
     # Додаємо обробники команд і колбеків
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_approval))
     
-    # Запускаємо задачу один раз через 5 секунд
-    app.job_queue.run_once(send_news_for_approval, 5)
+    # Перевіряємо, чи JobQueue доступний
+    if app.job_queue is not None:
+        # Запускаємо задачу один раз через 5 секунд
+        app.job_queue.run_once(send_news_for_approval, 5)
+        logger.info("JobQueue налаштовано успішно")
+    else:
+        logger.error("JobQueue не доступний")
     
     # Запускаємо бота
     logger.info("Бот запущений...")
