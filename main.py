@@ -41,11 +41,8 @@ async def handle_approval(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("❌ Відхилено.")
 
 def main():
-    # Створюємо додаток і явно включаємо JobQueue
-    app = (ApplicationBuilder()
-           .token(BOT_TOKEN)
-           .concurrent_updates(True)
-           .build())
+    # Створюємо додаток простіше
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
     
     # Додаємо обробники команд і колбеків
     app.add_handler(CommandHandler("start", start))
@@ -59,9 +56,9 @@ def main():
     else:
         logger.error("JobQueue не доступний")
     
-    # Запускаємо бота
+    # Запускаємо бота простіше
     logger.info("Бот запущений...")
-    app.run_polling()
+    app.run_polling(drop_pending_updates=True)
 
 # ВИПРАВЛЕНО: правильні підкреслення замість зірочок
 if __name__ == "__main__":
