@@ -1,7 +1,7 @@
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
-    ApplicationBuilder, ContextTypes, CommandHandler,
+    ApplicationBuilder, CommandHandler, ContextTypes,
     CallbackQueryHandler
 )
 
@@ -48,7 +48,6 @@ def main():
 
     app.job_queue.run_once(send_news_for_approval, 5)
 
-    print("Бот запущено.")
     app.run_polling()
 
 
