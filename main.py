@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Бот активний. Очікую новини.")
-
-async def send_news_for_approval(context: ContextTypes.DEFAULT_TYPE):
-    news_text = "🔥 УЄФА підтвердила новий формат Ліги чемпіонів."
+    
+    # Тестове повідомлення одразу після команди /start
+    news_text = "🔥 ТЕСТОВА НОВИНА: УЄФА підтвердила новий формат Ліги чемпіонів."
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("✅ Підтвердити", callback_data="approve"),
          InlineKeyboardButton("❌ Відхилити", callback_data="reject")]
@@ -41,25 +41,16 @@ async def handle_approval(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("❌ Відхилено.")
 
 def main():
-    # Створюємо додаток простіше
+    # Створюємо додаток максимально просто
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     
-    # Додаємо обробники команд і колбеків
+    # Додаємо обробники
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_approval))
     
-    # Перевіряємо, чи JobQueue доступний
-    if app.job_queue is not None:
-        # Запускаємо задачу один раз через 5 секунд
-        app.job_queue.run_once(send_news_for_approval, 5)
-        logger.info("JobQueue налаштовано успішно")
-    else:
-        logger.error("JobQueue не доступний")
-    
-    # Запускаємо бота простіше
+    # Запускаємо бота
     logger.info("Бот запущений...")
     app.run_polling(drop_pending_updates=True)
 
-# ВИПРАВЛЕНО: правильні підкреслення замість зірочок
 if __name__ == "__main__":
     main()
